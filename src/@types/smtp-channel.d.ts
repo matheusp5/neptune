@@ -9,7 +9,6 @@
       user: string;
       pass: string;
     };
-    // Adicione outras opções aqui, se necessário
   }
 
   export class SMTPChannel extends EventEmitter {
@@ -21,6 +20,5 @@
     rcpt(to: string): Promise<void>;
     data(data: string): Promise<void>;
     quit(): Promise<void>;
-    // Adicione outras funções aqui, se necessário
   }
 }
