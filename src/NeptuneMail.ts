@@ -1,7 +1,8 @@
-﻿
+﻿import * as neptune from "Neptune";
+
 
 class NeptuneMail {
-    constructor() {
+    constructor(conf: neptune.NeptuneServerConfig) {
         
     }
 }
