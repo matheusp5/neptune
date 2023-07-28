@@ -6,4 +6,8 @@ declare module 'Neptune' {
         smtpPassword: string
         smtpPort?: number
     }
+    export interface NeptuneAuthenticationCredentials {
+        email: string
+        password: string
+    }
 }
