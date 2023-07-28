@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/ofmxtheuuz/neptune/issues"
   },
-  "homepage": "https://github.com/ofmxtheuuz/neptune#readme"
+  "homepage": "https://github.com/ofmxtheuuz/neptune#readme",
+  "dependencies": {
+    "@types/node": "^20.4.5",
+    "net": "^1.0.2",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6"
+  }
 }
