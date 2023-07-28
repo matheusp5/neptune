@@ -1,0 +1,19 @@
+{
+  "name": "neptune",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ofmxtheuuz/neptune.git"
+  },
+  "author": "Matheus Piccoli",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ofmxtheuuz/neptune/issues"
+  },
+  "homepage": "https://github.com/ofmxtheuuz/neptune#readme"
+}
