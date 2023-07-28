@@ -20,6 +20,12 @@ class NeptuneMail {
     if (secureSSL) this.smtp_secure = secureSSL;
   }
 
+  /**
+   * The sendSimpleMail method allows the user to send an email to multiple recipients. It takes the following parameters:
+   * @param receivers An array of recipient email addresses.
+   * @param subject The subject of the email.
+   * @param content The content of the email.
+   */
   async sendSimpleMail(receivers: string[], subject: string, content: string) {
     try {
       const channel: SMTPChannel = new SMTPChannel({
@@ -56,12 +62,19 @@ class NeptuneMail {
       await channel.data(emailData + '\r\n\r\n' + content + '\r\n');
       await channel.quit();
 
-      console.log('E-mail sent with success!');
+      console.log('Email sent with success!');
     } catch (e) {
-      console.error(`An error ocurred during the e-mail send. ${e}`);
+      console.error(`An error ocurred during the email send. ${e}`);
     }
   }
 
+  /**
+  * The sendMailWithTemplate method allows the user to send an email to multiple recipients using a customizable HTML email template. It takes the following parameters:
+  * @param receivers An array of recipient email addresses.
+  * @param subject The subject of the email.
+  * @param templatePath The file path of the HTML template file containing placeholders like {{key}}.
+  * @param templateData An object that contains key-value pairs representing the data to replace the placeholders in the template.
+   */
   async sendMailWithTemplate(receivers: string[], subject: string, templatePath: string, templateData: Neptune.NeptuneTemplateData) {
     try {
       const templateContent = fs.readFileSync(templatePath, 'utf-8');
