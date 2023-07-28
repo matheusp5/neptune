@@ -10,4 +10,8 @@
     email: string;
     password: string;
   }
+
+  export interface NeptuneTemplateData {
+    [key: string]: string;
+  }
 }

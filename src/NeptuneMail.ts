@@ -1,5 +1,6 @@
 ﻿import * as Neptune from 'Neptune';
 import { SMTPChannel } from 'smtp-channel';
+import fs from 'fs-extra';
 
 class NeptuneMail {
   private smtp_server: string;
@@ -58,6 +59,20 @@ class NeptuneMail {
       console.log('E-mail sent with success!');
     } catch (e) {
       console.error(`An error ocurred during the e-mail send. ${e}`);
+    }
+  }
+
+  async sendMailWithTemplate(receivers: string[], subject: string, templatePath: string, templateData: Neptune.NeptuneTemplateData) {
+    try {
+      const templateContent = fs.readFileSync(templatePath, 'utf-8');
+      const compiledTemplate = Object.entries(templateData).reduce(
+          (acc, [key, value]) => acc.replace(new RegExp(`{{${key}}}`, 'g'), value),
+          templateContent
+      );
+
+      await this.sendSimpleMail(receivers, subject, compiledTemplate);
+    } catch (e) {
+      console.error(`An error occurred during the e-mail send with template. ${e}`);
     }
   }
 }
