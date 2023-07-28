@@ -4,7 +4,9 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "test": "test"
+    "test": "jest",
+    "build": "npx tsc",
+    "publish": "npx tsc --declaration"
   },
   "repository": {
     "type": "git",
@@ -17,7 +19,7 @@
   },
   "homepage": "https://github.com/ofmxtheuuz/neptune#readme",
   "dependencies": {
-    "net": "^1.0.2",
+    "net": "^1.0.2"
   },
   "devDependencies": {
     "@types/jest": "^29.5.3",
