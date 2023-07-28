@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest",
     "build": "npx tsc",
-    "publish": "npx tsc --declaration"
+    "publish": "npx tsc --declaration",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\" \"src/**/*.d.ts\""
   },
   "repository": {
     "type": "git",
