@@ -1,23 +1,44 @@
-﻿import * as Neptune from 'Neptune';
-import { SMTPChannel } from 'smtp-channel';
+﻿import nodemailer from 'nodemailer';
 import fs from 'fs-extra';
+import SMTPTransport from 'nodemailer/lib/smtp-transport';
+
+export interface NeptuneServerConfig {
+  host: string;
+  authentication: NeptuneAuthenticationCredentials;
+  port?: number;
+  secure_ssl?: boolean;
+  sender_email: string;
+}
+export interface NeptuneAuthenticationCredentials {
+  email: string;
+  password: string;
+}
+
+export interface NeptuneTemplateData {
+  [key: string]: string;
+}
 
 class NeptuneMail {
   private smtp_server: string;
-  private smtp_authentication: Neptune.NeptuneAuthenticationCredentials;
+  private smtp_authentication: NeptuneAuthenticationCredentials;
   private smtp_port: number = 587;
   private smtp_secure: boolean = false;
+  private sender_email: string;
   constructor({
-    smtpServer,
-    smtpPort,
-    smtpEmail,
-    smtpPassword,
-    secureSSL,
-  }: Neptune.NeptuneServerConfig) {
-    this.smtp_server = smtpServer;
-    this.smtp_authentication = { email: smtpEmail, password: smtpPassword };
-    if (smtpPort) this.smtp_port = smtpPort;
-    if (secureSSL) this.smtp_secure = secureSSL;
+    host,
+    port,
+    authentication,
+    secure_ssl,
+    sender_email,
+  }: NeptuneServerConfig) {
+    this.smtp_server = host;
+    this.smtp_authentication = {
+      email: authentication.email,
+      password: authentication.password,
+    };
+    this.sender_email = sender_email;
+    if (port) this.smtp_port = port;
+    if (secure_ssl) this.smtp_secure = secure_ssl;
   }
 
   /**
@@ -26,66 +47,64 @@ class NeptuneMail {
    * @param subject The subject of the email.
    * @param content The content of the email.
    */
-  async sendSimpleMail(receivers: string[], subject: string, content: string) {
+  async sendMail(receivers: string[], subject: string, content: string) {
+    let messages: SMTPTransport.SentMessageInfo[] = [];
     try {
-      const channel: SMTPChannel = new SMTPChannel({
+      const smtpConfig = {
         host: this.smtp_server,
         port: this.smtp_port,
-        secure: false,
+        secure: this.smtp_secure,
         auth: {
           user: this.smtp_authentication.email,
           pass: this.smtp_authentication.password,
         },
-      });
-
-      await channel.connect();
-      await channel.helo({ hostName: this.smtp_server });
-
-      const from: string = `<${this.smtp_authentication.email}>`;
-      const to = receivers.map((rcvr: string) => `<${rcvr}>`).join(', ');
-      const headers = {
-        From: from,
-        To: to,
-        Subject: subject,
       };
 
-      const emailData = Object.entries(headers)
-        .map(([key, value]) => `${key}: ${value}`)
-        .join('\r\n');
-
-      await channel.mail(from);
+      const transporter = nodemailer.createTransport(smtpConfig);
 
       for (const receiver of receivers) {
-        await channel.rcpt(`<${receiver}>`);
+        const mailOptions = {
+          from: this.sender_email,
+          to: receiver,
+          subject,
+          text: content,
+        };
+
+        const info = await transporter.sendMail(mailOptions);
+        messages.push(info);
       }
-
-      await channel.data(emailData + '\r\n\r\n' + content + '\r\n');
-      await channel.quit();
-
-      console.log('Email sent with success!');
+      return messages;
     } catch (e) {
       console.error(`An error ocurred during the email send. ${e}`);
     }
   }
 
   /**
-  * The sendMailWithTemplate method allows the user to send an email to multiple recipients using a customizable HTML email template. It takes the following parameters:
-  * @param receivers An array of recipient email addresses.
-  * @param subject The subject of the email.
-  * @param templatePath The file path of the HTML template file containing placeholders like {{key}}.
-  * @param templateData An object that contains key-value pairs representing the data to replace the placeholders in the template.
+   * The sendMailWithTemplate method allows the user to send an email to multiple recipients using a customizable HTML email template. It takes the following parameters:
+   * @param receivers An array of recipient email addresses.
+   * @param subject The subject of the email.
+   * @param templatePath The file path of the HTML template file containing placeholders like {{key}}.
+   * @param templateData An object that contains key-value pairs representing the data to replace the placeholders in the template.
    */
-  async sendMailWithTemplate(receivers: string[], subject: string, templatePath: string, templateData: Neptune.NeptuneTemplateData) {
+  async sendTemplatedMail(
+    receivers: string[],
+    subject: string,
+    templatePath: string,
+    templateData: NeptuneTemplateData,
+  ) {
     try {
       const templateContent = fs.readFileSync(templatePath, 'utf-8');
       const compiledTemplate = Object.entries(templateData).reduce(
-          (acc, [key, value]) => acc.replace(new RegExp(`{{${key}}}`, 'g'), value),
-          templateContent
+        (acc, [key, value]) =>
+          acc.replace(new RegExp(`{{${key}}}`, 'g'), value),
+        templateContent,
       );
 
-      await this.sendSimpleMail(receivers, subject, compiledTemplate);
+      await this.sendMail(receivers, subject, compiledTemplate);
     } catch (e) {
-      console.error(`An error occurred during the e-mail send with template. ${e}`);
+      console.error(
+        `An error occurred during the e-mail send with template. ${e}`,
+      );
     }
   }
 }
