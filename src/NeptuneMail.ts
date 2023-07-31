@@ -18,27 +18,26 @@ export interface NeptuneTemplateData {
   [key: string]: string;
 }
 
+export interface SenderInterface {
+  email: string
+  name: string
+}
+
+type NeptuneConstructorConfigs = {
+  configFilePath?: string
+  config: string
+}
+
+
 class NeptuneMail {
   private smtp_server: string;
   private smtp_authentication: NeptuneAuthenticationCredentials;
   private smtp_port: number = 587;
   private smtp_secure: boolean = false;
-  private sender_email: string;
-  constructor({
-    host,
-    port,
-    authentication,
-    secure_ssl,
-    sender_email,
-  }: NeptuneServerConfig) {
-    this.smtp_server = host;
-    this.smtp_authentication = {
-      email: authentication.email,
-      password: authentication.password,
-    };
-    this.sender_email = sender_email;
-    if (port) this.smtp_port = port;
-    if (secure_ssl) this.smtp_secure = secure_ssl;
+  private sender_email: SenderInterface;
+  constructor(configs: NeptuneConstructorConfigs) {
+    if(!configs.configFilePath) configs.configFilePath = ""
+
   }
 
   /**
