@@ -23,6 +23,7 @@
     "@types/nodemailer": "^6.4.9",
     "better-queue": "^3.8.12",
     "bullmq": "^4.6.3",
+    "dotenv": "^16.3.1",
     "fs-extra": "^11.1.1",
     "nodemailer": "^6.9.4"
   },
