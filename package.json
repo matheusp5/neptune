@@ -21,10 +21,13 @@
   "homepage": "https://github.com/ofmxtheuuz/neptune#readme",
   "dependencies": {
     "@types/nodemailer": "^6.4.9",
+    "better-queue": "^3.8.12",
+    "bullmq": "^4.6.3",
     "fs-extra": "^11.1.1",
     "nodemailer": "^6.9.4"
   },
   "devDependencies": {
+    "@types/better-queue": "^3.8.3",
     "@types/fs-extra": "^11.0.1",
     "@types/jest": "^29.5.3",
     "@types/node": "^20.4.4",

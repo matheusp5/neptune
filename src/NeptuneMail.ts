@@ -49,34 +49,30 @@ class NeptuneMail {
    */
   async sendMail(receivers: string[], subject: string, content: string) {
     let messages: SMTPTransport.SentMessageInfo[] = [];
-    try {
-      const smtpConfig = {
-        host: this.smtp_server,
-        port: this.smtp_port,
-        secure: this.smtp_secure,
-        auth: {
-          user: this.smtp_authentication.email,
-          pass: this.smtp_authentication.password,
-        },
+    const smtpConfig = {
+      host: this.smtp_server,
+      port: this.smtp_port,
+      secure: this.smtp_secure,
+      auth: {
+        user: this.smtp_authentication.email,
+        pass: this.smtp_authentication.password,
+      },
+    };
+
+    const transporter = nodemailer.createTransport(smtpConfig);
+
+    for (const receiver of receivers) {
+      const mailOptions = {
+        from: this.sender_email,
+        to: receiver,
+        subject,
+        text: content,
       };
 
-      const transporter = nodemailer.createTransport(smtpConfig);
-
-      for (const receiver of receivers) {
-        const mailOptions = {
-          from: this.sender_email,
-          to: receiver,
-          subject,
-          text: content,
-        };
-
-        const info = await transporter.sendMail(mailOptions);
-        messages.push(info);
-      }
-      return messages;
-    } catch (e) {
-      console.error(`An error ocurred during the email send. ${e}`);
+      const info = await transporter.sendMail(mailOptions);
+      messages.push(info);
     }
+    return messages;
   }
 
   /**
@@ -92,20 +88,14 @@ class NeptuneMail {
     templatePath: string,
     templateData: NeptuneTemplateData,
   ) {
-    try {
-      const templateContent = fs.readFileSync(templatePath, 'utf-8');
-      const compiledTemplate = Object.entries(templateData).reduce(
-        (acc, [key, value]) =>
-          acc.replace(new RegExp(`{{${key}}}`, 'g'), value),
-        templateContent,
-      );
+    const templateContent = fs.readFileSync(templatePath, 'utf-8');
+    const compiledTemplate = Object.entries(templateData).reduce(
+      (acc, [key, value]) => acc.replace(new RegExp(`{{${key}}}`, 'g'), value),
+      templateContent,
+    );
 
-      await this.sendMail(receivers, subject, compiledTemplate);
-    } catch (e) {
-      console.error(
-        `An error occurred during the e-mail send with template. ${e}`,
-      );
-    }
+    await this.sendMail(receivers, subject, compiledTemplate);
+
   }
 }
 
