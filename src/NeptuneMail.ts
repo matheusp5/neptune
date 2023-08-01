@@ -10,7 +10,7 @@ export interface NeptuneTemplateData {
   [key: string]: string;
 }
 
-type NeptuneConstructorConfigs = {
+export type NeptuneConstructorConfigs = {
   configFilePath?: string;
   config: string;
 };

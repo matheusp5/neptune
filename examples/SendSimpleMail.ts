@@ -1,4 +1,4 @@
-import NeptuneMail from "../src/NeptuneMail";
+import NeptuneMail from "../src/index";
 
 const mailer = new NeptuneMail({
   config: "main"
