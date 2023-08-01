@@ -1,12 +1,11 @@
 {
-  "name": "neptune",
-  "version": "1.0.0",
-  "description": "",
-  "main": "dist/src/index.js",
+  "name": "neptune-mail",
+  "version": "1.1.0",
+  "description": "Security, queues, simplicity. Neptune is an innovative project for sending email messages.",
+  "main": "dist/src/NeptuneMail.js",
   "types": "dist/src/NeptuneMail.d.ts",
   "scripts": {
-    "build": "npx tsc",
-    "publish": "npx tsc --declaration",
+    "build": "npx tsc --declaration",
     "format": "prettier --write \"src/**/*.ts\"  \"src/**/*.d.ts\""
   },
   "repository": {
