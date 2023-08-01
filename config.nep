@@ -4,7 +4,7 @@
   secure_ssl: true
   auth {
     user: example@gmail.com
-    password: example
+    password: env('PASSWORD')
   }
   sender {
     email: example@gmail.com
