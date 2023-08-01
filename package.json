@@ -4,7 +4,6 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "test": "jest",
     "build": "npx tsc",
     "publish": "npx tsc --declaration",
     "format": "prettier --write \"src/**/*.ts\"  \"src/**/*.d.ts\""
@@ -20,24 +19,19 @@
   },
   "homepage": "https://github.com/ofmxtheuuz/neptune#readme",
   "dependencies": {
-    "@types/nodemailer": "^6.4.9",
-    "better-queue": "^3.8.12",
-    "bullmq": "^4.6.3",
     "dotenv": "^16.3.1",
     "fs-extra": "^11.1.1",
     "nodemailer": "^6.9.4"
   },
   "devDependencies": {
-    "@types/better-queue": "^3.8.3",
+    "@types/nodemailer": "^6.4.9",
     "@types/fs-extra": "^11.0.1",
-    "@types/jest": "^29.5.3",
     "@types/node": "^20.4.4",
     "@typescript-eslint/eslint-plugin": "^6.2.0",
     "@typescript-eslint/parser": "^6.2.0",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "^8.9.0",
     "eslint-plugin-prettier": "^5.0.0",
-    "jest": "^29.6.2",
     "node": "^20.5.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.1.6"
