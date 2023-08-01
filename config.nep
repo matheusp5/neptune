@@ -3,10 +3,10 @@
   port: 465
   secure_ssl: true
   auth {
-    user: mategame2402@gmail.com
-    password: zifzqyaofypgqgik
+    user: example@gmail.com
+    password: example
   }
   sender {
-    email: mategame2402@gmail.com
+    email: example@gmail.com
   }
 }
