@@ -52,3 +52,6 @@ const mailer = new NeptuneMail({
 mailer.sendMail(["example@gmail.com"], 'Hello, World!', 'Hellooooooooo')
 ```
 
+<hr>
+
+Could you follow me? ❤
