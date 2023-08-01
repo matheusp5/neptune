@@ -4,4 +4,4 @@ const mailer = new NeptuneMail({
   config: "main"
 })
 
-mailer.sendMail(["mxtheuzchika@gmail.com"], 'Hello, World!', 'Hellooooooooo')
+mailer.sendMail(["example@gmail.com"], 'Hello, World!', 'Hellooooooooo')
