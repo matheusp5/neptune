@@ -71,26 +71,28 @@ class NeptuneMail {
 
     if (!this.isSending) {
       this.isSending = true;
-      await this.processMailQueue(transporter);
+      return await this.processMailQueue(transporter);
     }
   }
 
   private async processMailQueue(
     transporter: Transporter<SMTPTransport.SentMessageInfo>,
   ) {
+    let messages = []
     while (!this.mailQueue.isEmpty()) {
       const mailOptions = this.mailQueue.dequeue();
       if (mailOptions) {
         try {
           const info = await transporter.sendMail(mailOptions);
-          console.log('E-mail enviado:', info);
+          messages.push(info)
         } catch (error) {
-          console.error('Erro ao enviar e-mail:', error);
+          console.error(error)
         }
       }
     }
 
     this.isSending = false;
+    return messages
   }
 
   /**
