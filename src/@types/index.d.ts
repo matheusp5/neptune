@@ -4,11 +4,11 @@
   }
 
   export type NeptuneConstructorConfigs = {
-    configFilePath?: string
-    config: string
-  }
+    configFilePath?: string;
+    config: string;
+  };
 
-   export interface MailerConfigInterface {
+  export interface MailerConfigInterface {
     host: string;
     port: number;
     secure_ssl: boolean;

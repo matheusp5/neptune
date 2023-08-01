@@ -1,17 +1,19 @@
-﻿import nodemailer, {Transporter} from 'nodemailer';
+﻿import nodemailer, { Transporter } from 'nodemailer';
 import fs from 'fs-extra';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
-import NeptuneConfigParser, {MailerConfigInterface} from "./utils/NeptuneConfigParser";
-import QueueBuilder from "./utils/QueueBuilder";
+import NeptuneConfigParser, {
+  MailerConfigInterface,
+} from './utils/NeptuneConfigParser';
+import QueueBuilder from './utils/QueueBuilder';
 
 export interface NeptuneTemplateData {
   [key: string]: string;
 }
 
 type NeptuneConstructorConfigs = {
-  configFilePath?: string
-  config: string
-}
+  configFilePath?: string;
+  config: string;
+};
 
 class NeptuneMail {
   private mailerConfig: MailerConfigInterface;
@@ -19,17 +21,20 @@ class NeptuneMail {
   private mailQueue: QueueBuilder<nodemailer.SendMailOptions>;
   private isSending: boolean;
   constructor(configs: NeptuneConstructorConfigs) {
-    if(!configs.configFilePath) {
-      this.configParser = new NeptuneConfigParser(configs.config)
+    if (!configs.configFilePath) {
+      this.configParser = new NeptuneConfigParser(configs.config);
     } else {
-      this.configParser = new NeptuneConfigParser(configs.config, configs.configFilePath)
+      this.configParser = new NeptuneConfigParser(
+        configs.config,
+        configs.configFilePath,
+      );
     }
 
     this.mailerConfig = this.configParser.parseConfiguration();
 
     this.mailQueue = new QueueBuilder<nodemailer.SendMailOptions>();
     this.isSending = false;
-    console.log(this.mailerConfig.secureSSL)
+    console.log(this.mailerConfig.secureSSL);
   }
 
   /**
@@ -47,7 +52,7 @@ class NeptuneMail {
       auth: {
         user: this.mailerConfig.auth_email,
         pass: this.mailerConfig.auth_password,
-      }
+      },
     };
 
     const transporter = nodemailer.createTransport(smtpConfig);
@@ -63,15 +68,15 @@ class NeptuneMail {
       this.mailQueue.enqueue(mailOptions);
     }
 
-
     if (!this.isSending) {
       this.isSending = true;
       await this.processMailQueue(transporter);
     }
-
   }
 
-  private async processMailQueue(transporter: Transporter<SMTPTransport.SentMessageInfo>) {
+  private async processMailQueue(
+    transporter: Transporter<SMTPTransport.SentMessageInfo>,
+  ) {
     while (!this.mailQueue.isEmpty()) {
       const mailOptions = this.mailQueue.dequeue();
       if (mailOptions) {
@@ -107,7 +112,6 @@ class NeptuneMail {
     );
 
     await this.sendMail(receivers, subject, compiledTemplate);
-
   }
 }
 

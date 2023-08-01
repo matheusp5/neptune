@@ -15,8 +15,13 @@ export interface MailerConfigInterface {
 class NeptuneConfigParser {
   private filePath: string;
 
-  constructor(private configName: string, filePath?: string) {
-    this.filePath = filePath ? path.resolve(filePath) : path.resolve('config.nep');
+  constructor(
+    private configName: string,
+    filePath?: string,
+  ) {
+    this.filePath = filePath
+      ? path.resolve(filePath)
+      : path.resolve('config.nep');
   }
 
   private getConfigContent(): string {
@@ -37,20 +42,22 @@ class NeptuneConfigParser {
 
     let currentConfig: string | null = null;
     for (const line of lines) {
-      const [key, value] = line.trim().split(':').map((item) => item.trim());
+      const [key, value] = line
+        .trim()
+        .split(':')
+        .map((item) => item.trim());
 
-      if (key.includes(this.configName + " {")) {
+      if (key.includes(this.configName + ' {')) {
         currentConfig = key;
         configObject[currentConfig] = {};
       } else if (currentConfig !== null) {
-        if(value) {
+        if (value) {
           if (value.startsWith('{')) {
             configObject[currentConfig][key] = JSON.parse(value);
           } else {
             configObject[currentConfig][key] = this.parseValue(value);
           }
         }
-
       }
     }
 
@@ -60,7 +67,7 @@ class NeptuneConfigParser {
   parseConfiguration(): MailerConfigInterface {
     const configContent = this.getConfigContent();
     const parsedConfig = this.parseConfigContent(configContent);
-    return parsedConfig[this.configName + " {"] as MailerConfigInterface;
+    return parsedConfig[this.configName + ' {'] as MailerConfigInterface;
   }
 }
 
