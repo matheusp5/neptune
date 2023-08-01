@@ -4,25 +4,14 @@ import SMTPTransport from 'nodemailer/lib/smtp-transport';
 import NeptuneConfigParser, {MailerConfigInterface} from "./utils/NeptuneConfigParser";
 import QueueBuilder from "./utils/QueueBuilder";
 
-export interface NeptuneAuthenticationCredentials {
-  email: string;
-  password: string;
-}
-
 export interface NeptuneTemplateData {
   [key: string]: string;
-}
-
-export interface SenderInterface {
-  email: string
-  name: string
 }
 
 type NeptuneConstructorConfigs = {
   configFilePath?: string
   config: string
 }
-
 
 class NeptuneMail {
   private mailerConfig: MailerConfigInterface;

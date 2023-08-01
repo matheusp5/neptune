@@ -6,10 +6,10 @@ dotenv.config();
 export interface MailerConfigInterface {
   host: string;
   port: number;
-  secureSSL: boolean;
-  auth_email: string;
-  auth_password: string;
-  sender_email: string;
+  secure_ssl: boolean;
+  user: string;
+  password: string;
+  email: string;
 }
 
 class NeptuneConfigParser {
@@ -41,7 +41,7 @@ class NeptuneConfigParser {
 
       if (key.includes(this.configName + " {")) {
         currentConfig = key;
-        configObject[currentConfig] = {}; // Initialize the nested object
+        configObject[currentConfig] = {};
       } else if (currentConfig !== null) {
         if(value) {
           if (value.startsWith('{')) {

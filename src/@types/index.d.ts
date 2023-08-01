@@ -1,17 +1,19 @@
 ﻿declare module 'Neptune' {
-  export interface NeptuneServerConfig {
-    smtpServer: string;
-    smtpEmail: string;
-    smtpPassword: string;
-    smtpPort?: number;
-    secureSSL?: boolean;
-  }
-  export interface NeptuneAuthenticationCredentials {
-    email: string;
-    password: string;
-  }
-
   export interface NeptuneTemplateData {
     [key: string]: string;
+  }
+
+  export type NeptuneConstructorConfigs = {
+    configFilePath?: string
+    config: string
+  }
+
+   export interface MailerConfigInterface {
+    host: string;
+    port: number;
+    secure_ssl: boolean;
+    user: string;
+    password: string;
+    email: string;
   }
 }

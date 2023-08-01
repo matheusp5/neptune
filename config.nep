@@ -1,13 +1,12 @@
 ﻿main {
   host: smtp.gmail.com
   port: 465
-  secureSSL: true
+  secure_ssl: true
   auth {
-    auth_email: mategame2402@gmail.com
-    auth_password: zifzqyaofypgqgik
+    user: mategame2402@gmail.com
+    password: zifzqyaofypgqgik
   }
   sender {
-    sender_email: mategame2402@gmail.com
-    sernder_name: Matheus Piccoli
+    email: mategame2402@gmail.com
   }
 }
