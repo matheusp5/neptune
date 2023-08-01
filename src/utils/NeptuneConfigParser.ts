@@ -3,24 +3,13 @@ import * as path from 'path';
 import dotenv from 'dotenv';
 dotenv.config();
 
-interface Auth {
-  email: string;
-  password: string;
-}
-
-interface Sender {
-  email: string;
-  name: string;
-}
-
-interface Config {
+export interface MailerConfigInterface {
   host: string;
   port: number;
   secureSSL: boolean;
   auth_email: string;
   auth_password: string;
   sender_email: string;
-  sender_name: string;
 }
 
 class NeptuneConfigParser {
@@ -68,10 +57,10 @@ class NeptuneConfigParser {
     return configObject;
   }
 
-  parseConfiguration(): Config {
+  parseConfiguration(): MailerConfigInterface {
     const configContent = this.getConfigContent();
     const parsedConfig = this.parseConfigContent(configContent);
-    return parsedConfig[this.configName + " {"] as Config;
+    return parsedConfig[this.configName + " {"] as MailerConfigInterface;
   }
 }
 

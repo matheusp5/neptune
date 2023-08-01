@@ -1,14 +1,9 @@
-﻿import nodemailer from 'nodemailer';
+﻿import nodemailer, {Transporter} from 'nodemailer';
 import fs from 'fs-extra';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
+import NeptuneConfigParser, {MailerConfigInterface} from "./utils/NeptuneConfigParser";
+import QueueBuilder from "./utils/QueueBuilder";
 
-export interface NeptuneServerConfig {
-  host: string;
-  authentication: NeptuneAuthenticationCredentials;
-  port?: number;
-  secure_ssl?: boolean;
-  sender_email: string;
-}
 export interface NeptuneAuthenticationCredentials {
   email: string;
   password: string;
@@ -30,13 +25,21 @@ type NeptuneConstructorConfigs = {
 
 
 class NeptuneMail {
-  private smtp_server: string;
-  private smtp_authentication: NeptuneAuthenticationCredentials;
-  private smtp_port: number = 587;
-  private smtp_secure: boolean = false;
-  private sender_email: SenderInterface;
+  private mailerConfig: MailerConfigInterface;
+  private readonly configParser: NeptuneConfigParser;
+  private mailQueue: QueueBuilder<nodemailer.SendMailOptions>;
+  private isSending: boolean;
   constructor(configs: NeptuneConstructorConfigs) {
-    if(!configs.configFilePath) configs.configFilePath = ""
+    if(!configs.configFilePath) {
+      this.configParser = new NeptuneConfigParser(configs.config)
+    } else {
+      this.configParser = new NeptuneConfigParser(configs.config, configs.configFilePath)
+    }
+
+    this.mailerConfig = this.configParser.parseConfiguration();
+
+    this.mailQueue = new QueueBuilder<nodemailer.SendMailOptions>();
+    this.isSending = false;
 
   }
 
@@ -49,29 +52,46 @@ class NeptuneMail {
   async sendMail(receivers: string[], subject: string, content: string) {
     let messages: SMTPTransport.SentMessageInfo[] = [];
     const smtpConfig = {
-      host: this.smtp_server,
-      port: this.smtp_port,
-      secure: this.smtp_secure,
+      host: this.mailerConfig.host,
+      port: this.mailerConfig.port,
+      secure: this.mailerConfig.secureSSL,
       auth: {
-        user: this.smtp_authentication.email,
-        pass: this.smtp_authentication.password,
+        user: this.mailerConfig.auth_email,
+        pass: this.mailerConfig.auth_password,
       },
     };
 
     const transporter = nodemailer.createTransport(smtpConfig);
+    const mailOptions: nodemailer.SendMailOptions = {
+      from: this.mailerConfig.sender_email,
+      to: receivers.join(','),
+      subject,
+      text: content,
+    };
 
-    for (const receiver of receivers) {
-      const mailOptions = {
-        from: this.sender_email,
-        to: receiver,
-        subject,
-        text: content,
-      };
+    this.mailQueue.enqueue(mailOptions);
 
-      const info = await transporter.sendMail(mailOptions);
-      messages.push(info);
+    if (!this.isSending) {
+      this.isSending = true;
+      await this.processMailQueue(transporter);
     }
-    return messages;
+
+  }
+
+  private async processMailQueue(transporter: Transporter<SMTPTransport.SentMessageInfo>) {
+    while (!this.mailQueue.isEmpty()) {
+      const mailOptions = this.mailQueue.dequeue();
+      if (mailOptions) {
+        try {
+          const info = await transporter.sendMail(mailOptions);
+          console.log('E-mail enviado:', info);
+        } catch (error) {
+          console.error('Erro ao enviar e-mail:', error);
+        }
+      }
+    }
+
+    this.isSending = false;
   }
 
   /**
