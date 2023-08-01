@@ -44,8 +44,6 @@ class NeptuneMail {
    * @param content The content of the email.
    */
   async sendMail(receivers: string[], subject: string, content: string) {
-    let messages: SMTPTransport.SentMessageInfo[] = [];
-
     const smtpConfig = {
       host: this.mailerConfig.host,
       port: this.mailerConfig.port,
