@@ -40,7 +40,7 @@ class NeptuneMail {
 
     this.mailQueue = new QueueBuilder<nodemailer.SendMailOptions>();
     this.isSending = false;
-
+    console.log(this.mailerConfig.secureSSL)
   }
 
   /**
@@ -58,18 +58,22 @@ class NeptuneMail {
       auth: {
         user: this.mailerConfig.auth_email,
         pass: this.mailerConfig.auth_password,
-      },
+      }
     };
 
     const transporter = nodemailer.createTransport(smtpConfig);
-    const mailOptions: nodemailer.SendMailOptions = {
-      from: this.mailerConfig.sender_email,
-      to: receivers.join(','),
-      subject,
-      text: content,
-    };
 
-    this.mailQueue.enqueue(mailOptions);
+    for (const receiver of receivers) {
+      const mailOptions: nodemailer.SendMailOptions = {
+        from: this.mailerConfig.sender_email,
+        to: receiver,
+        subject,
+        text: content,
+      };
+
+      this.mailQueue.enqueue(mailOptions);
+    }
+
 
     if (!this.isSending) {
       this.isSending = true;

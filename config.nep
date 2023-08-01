@@ -1,0 +1,13 @@
+﻿main {
+  host: smtp.gmail.com
+  port: 465
+  secureSSL: true
+  auth {
+    auth_email: mategame2402@gmail.com
+    auth_password: zifzqyaofypgqgik
+  }
+  sender {
+    sender_email: mategame2402@gmail.com
+    sernder_name: Matheus Piccoli
+  }
+}
